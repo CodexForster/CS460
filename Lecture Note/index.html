@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="description" content="">
+      <meta name="author" content="Danush Shekar">
+      <title>CS460 Lecture 9</title>
+      <link rel = "icon" href =  "Images/sigmoid.png" type = "image/x-icon"> 
+      <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
+      <script type="text/javascript" src="http://codecogs.unisa.ac.za/latexit.js"></script>
+      <link rel="stylesheet" href="CSS/normalize.css">
+      <link rel="stylesheet" href="CSS/style.css">
+    </head>
+	<body>
+        <nav>
+            <div class="topic">
+                <h1>Lecture 9 - Logistic Regression</h1>
+            </div><!--.topic div-->
+        </nav>
+        <div class="bg1">
+            <div class="content-area-top">
+                <div class="wrapper">
+                    <p>
+                        These notes accompany the NISER CS class CS460/660: Machine Learning. For questions/concerns/bug reports, please submit a pull request directly to this git repo.
+                    </p>
+                    <h2>
+                        Introduction
+                    </h2>
+                    <p>
+                        Logistic Regression (LReg) is a supervised algorithm used in classification problems in machine learning. There are 2 output labels/classes that the data would be classified into, we will call them positive and negative lables (we will denote the positive labels with the value 1 and the negative labels with 0). One can make a multi-label classification using LReg, but we will touch upon that towards the end.
+                    </p>
+                    <p>
+                        One has to ask why is the term "Regression" used in the name when it is a classification algorithm. Regression is an algorithm that gives us a real number as the output for every input <pre3 lang="latex" style="margin-bottom: 0px;">x</pre3>, and the output of a regression model, <pre2 lang="latex">\{y\}</pre2> is continuous. LReg also gives a continuous real number as the output, but we have some sort of a threshold to put it into one of the 2 labels. The reason "Logistic" is used is that this algorithm involves using the standard logistic function or the sigmoid function: <a href="https://www.codecogs.com/eqnedit.php?latex=\frac{1}{1&space;&plus;&space;e^{-x}}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{1}{1&space;&plus;&space;e^{-x}}" style="margin-bottom: -10px;" title="\frac{1}{1 + e^{-x}}" /></a>.
+                    </p>
+                </div><!--.wrapper div-->
+            </div><!--.content-area div-->
+        </div><!--.bg1 div-->
+
+        <div class="bg2">
+            <div class="content-area">
+                <div class="wrapper">
+                    <h2>
+                        Model Representation and Training
+                    </h2>
+                    <p>
+                        We will use the same function as used in linear regression, given by <pre5 lang="latex">(WX + b)</pre5> where <pre3 lang="latex">X</pre3> is our input and <pre3 lang="latex">W</pre3> and <pre3 lang="latex">b</pre3> are our parameters, which are learnt during training. Only this time, we will transform the output using the logistic function to return a value between 0 and 1. Let us call this parameterised logistic function, <pre5 lang="latex">S_{W, b}(X))</pre5>. We have:
+                        <pre lang="latex">
+                            S_{W, b}(X) = \frac{1}{1 + e^{-(WX + b)}}
+                        </pre>
+                        For an input <pre3 lang="latex">X</pre3>, <pre5 lang="latex">S_{W, b}(X)</pre5> lies in (0, 1). This is taken as the probability that the input belongs to class 1. The probability that <pre3 lang="latex">X</pre3> belongs to class 0, is <pre5 lang="latex">(1 - S_{W, b}(X))</pre5>. 
+                        Now, to assign a class, we set some threshold (say <pre3 lang="latex">t</pre3>) such that, for some <pre2 lang="latex">X_i</pre2>, if <pre5 lang="latex">S_{W, b}(X_i) \geq t</pre5> then the label 1 is assigned to <pre2 lang="latex">X_i</pre2>, else 0 is assigned. The figure shown below explains the same, graphically, where is the sigmoid takes a functional value above the blue line, then 1 is assigned; if it takes a functional value under the blue line, 0 is assigned.
+                        <figure>
+                            <img src="Images/threshold.png" alt="Threshold" style="width:500px;"> 
+                            <figcaption>
+                                Fig.1 - Threshold for classifying into positive/negative label (Source: <a href="https://ml-cheatsheet.readthedocs.io/en/latest/logistic_regression.html" target="blank">Machine Learning Glossary</a>)
+                            </figcaption>
+                        </figure>
+                        <br>We also define likelihood:
+                        <pre lang="latex">
+                            \begin{aligned}
+                            L_{(W, b)} \equiv L((W, b) \mid y ; X) &=\prod_{i = 1}^N S_{W, b}\left(X_{i}\right)^{y_{i}}\left(1 - S_{W, b}\left(X_{i}\right)\right)^{\left(1-y_{i}\right)}
+                            \end{aligned}
+                        </pre> 
+                        Above, (<pre2 lang="latex">y \equiv \{y_i\}</pre2>) and (<pre5 lang="latex">X \equiv \{X_i\}</pre5>) are the true output and corresponding input (training) data respectively. <pre2 lang="latex">y_{i}</pre2> is the true class, i.e 0 or 1. The product is from <pre3 lang="latex">i = 0</pre3> to <pre3 lang="latex">N</pre3> where here <pre3 lang="latex">N</pre3> is taken to be the training dataset size. The above function we have, quantifies how good our fit is, or in simpler terms, how likely a given input will give the correct label. We see that the above definition is the likelihood of observing <pre3 lang="latex">N</pre3> labels for <pre3 lang="latex">N</pre3> examples, which is the product of likelihood of each observation.
+                        Like in linear regression, where we minimised the loss function and thus update our parameters, LReg will involve maximising the likelihood function.<br>
+                        As an example let us say <pre2 lang="latex">y_i</pre2> = 1 and we have <pre2 lang="latex">x_1</pre2> that is some real number. <pre5 lang="latex">S_{W, b}\left(x_{i}\right)^{y_{i}}\left(1 - S_{W, b}\left(x_{i}\right)\right)^{\left(1-y_{i}\right)</pre5> would give us <pre5 lang="latex"> S_{W, b}\left(x_{i}\right)^{1}\left(1 - S_{W, b}\left(x_{i}\right)\right)^{0} = S_{W, b}\left(x_{i}\right) \in (0,1)</pre5>.
+                        <br>One needs to note that there should not interdependent examples/observations, which means that any example one chooses, it should be independent of the other examples in the dataset. 
+                        <br>Since we have exponentials involved (harder to calculate), one can also shift to log-likelihood, and thus the equation now becomes:
+                        <pre lang="latex">
+                            \begin{aligned}
+                            \frac{1}{N}log(L_{(W, b)}) \equiv log (L((W, b) \mid y ; X)) &=\frac{1}{N}\prod_{i = 1}^N \left(y_{i}\right)log(S_{W, b}\left(X_{i}\right)) + \left(1-y_{i}\right)log(\left(1 - S_{W, b}\left(X_{i}\right)\right))
+                            \end{aligned}
+                        </pre> 
+                        Not always will we get a closed form solution and in those situations, we will have to find our optimal parameters using gradient descent.
+                        The parameter update thus involves the likelihood as the loss function. But one should be vary of the sign, as the parameter update involves the negative of the gradient of the loss function, where we want to reach the minima. But in logistic regression we would want to maximise the likelihood, hence there would be some difference in the signs involved.
+                    </p>
+                </div><!--.wrapper div-->
+            </div><!--.content-area div-->
+        </div><!--.bg1 div-->
+        
+        <div class="bg1" id="References" style="border-top: 3px solid black;">
+            <div class="content-area">
+                <div class="wrapper">
+                    <h2>
+                        References
+                    </h2>
+                    <ol type="1">
+                        <li>
+                            Chen, J. (2020). An updated overview of recent gradient descent algorithms. John Chen. Retrieved 3 October 2020, from <a href="https://johnchenresearch.github.io/demon/" target="blank">https://johnchenresearch.github.io/demon/</a>.
+                        </li>
+                        <li>
+                            CS231n Convolutional Neural Networks for Visual Recognition. CS231n. (2020). Retrieved 3 October 2020, from <a href="https://cs231n.github.io/" target="blank">https://cs231n.github.io/</a>.
+                        </li>
+                        <li>
+                            Diederik P. Kingma, & Jimmy Ba. (2017). Adam: A Method for Stochastic Optimization.
+                        </li>
+                        <li>
+                            Mallick, S., & Nayak, S. (2020). Number of Parameters and Tensor Sizes in a Convolutional Neural Network (CNN). Learn OpenCV. Retrieved 3 October 2020, from <a href="https://www.learnopencv.com/number-of-parameters-and-tensor-sizes-in-convolutional-neural-network/" target="blank">https://www.learnopencv.com/number-of-parameters-and-tensor-sizes-in-convolutional-neural-network/</a>.
+                        </li>
+                        <li>
+                            Ruder, S. (2020). An overview of gradient descent optimization algorithms. Sebastian Ruder. Retrieved 3 October 2020, from <a href="https://ruder.io/optimizing-gradient-descent/" target="blank">https://ruder.io/optimizing-gradient-descent/</a>.
+                        </li>
+                        <li>
+                            Stewart, M. (2020). Neural Network Optimization. Medium. Retrieved 3 October 2020, from <a href="https://towardsdatascience.com/neural-network-optimization-7ca72d4db3e0" target="blank">https://towardsdatascience.com/neural-network-optimization-7ca72d4db3e0</a>.
+                        </li>
+                        <li>
+                            Stochastic vs Batch Gradient Descent. Medium. (2020). Retrieved 4 October 2020, from <a href="https://medium.com/@divakar_239/stochastic-vs-batch-gradient-descent-8820568eada1" target="blank">https://medium.com/@divakar_239/stochastic-vs-batch-gradient-descent-8820568eada1</a>.
+                        </li>
+                        <li>
+                            Sun, S., Cao, Z., Zhu, H., & Zhao, J. (2020). A Survey of Optimization Methods From a Machine Learning Perspective. IEEE Transactions On Cybernetics, 50(8), 3668-3681. <a href="https://doi.org/10.1109/tcyb.2019.2950779" target="blank">https://doi.org/10.1109/tcyb.2019.2950779</a>.
+                        </li>
+                        <li>
+                            Wright, S. (2020). Optimization Methods for Machine Learning. Presentation, <a href="http://helper.ipam.ucla.edu/publications/elws1/elws1_13686.pdf" target="blank">http://helper.ipam.ucla.edu/publications/elws1/elws1_13686.pdf</a>.
+                        </li>
+                    </ol>
+                 </div><!--.wrapper div-->
+            </div><!--.content-area div-->
+        </div><!--.bg1 div-->
+        <div class="bg4">
+            <div class="details">
+                <div class="wrapper">
+                    <div class="heading">
+                        <h2>
+                            Lecture By:
+                        </h2>
+                    </div><!--.heading div-->
+                    <div class="photo">
+                        <a href="https://www.niser.ac.in/users/smishra" target="blank"><img src="Images/mishra.jpg" alt="Subhankar Mishra"></a>
+                        <p><a href="https://www.niser.ac.in/users/smishra" target="blank">Subhankar Mishra</a></p>
+                    </div><!--.photo div-->
+                </div><!--.wrapper div-->
+            </div><!--.details div-->
+        </div><!--.bg4 div-->
+        <div class="bg3">
+            <div class="details">
+                <div class="wrapper">
+                    <div class="heading">
+                        <h2>
+                            Contributors:
+                        </h2>
+                    </div>  <!--.heading div-->
+                    <div class="photo">
+                        <a href="https://github.com/CodexForster" target="blank"><img src="Images/Danush.jpeg" alt="Danush Shekar"></a>
+                        <p><a href="https://github.com/CodexForster" target="blank">Danush Shekar</a></p>
+                    </div><!--.photo div-->
+                    <div class="photo">
+                        <a href="https://github.com/harisankarkr1998" target="blank"><img src="Images/Hari.jpg" alt="Harisankar K R"></a>
+                        <p><a href="https://github.com/harisankarkr1998" target="blank">Harisankar K R</a></p>
+                    </div><!--.photo div-->
+                </div><!--.wrapper div-->
+            </div><!--.details div-->
+        </div><!--.bg3 div-->
+        <div class="bg3" style="background: black; padding: 10px; border-top: none;">
+            <div class="details" style="padding: 0px;">
+                <div class="wrapper">
+                    <p style="color: white;">Lecture Notes submitted in partial fulfilment of the requirements for the CS460 Course, NISER.</p>
+                </div><!--.wrapper div-->
+            </div><!--.details div-->
+        </div><!--.bg3 div-->
+    </body>
+</html>
