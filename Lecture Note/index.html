@@ -24,7 +24,7 @@
             <div class="content-area-top">
                 <div class="wrapper">
                     <p>
-                        These notes accompany the NISER CS class CS460/660: Machine Learning. For questions/concerns/bug reports, please submit a pull request directly to this git repo.
+                        These notes accompany the NISER CS class CS460/660: <a href="http://www.niser.ac.in/~smishra/teach/cs460/" target = "blank">Machine Learning</a>. For questions/concerns/bug reports, please submit a pull request directly to this <a href="https://github.com/CodexForster/CS460/tree/main" target="blank">git repo</a>.
                     </p>
                     <h2>
                         Introduction
@@ -38,7 +38,6 @@
                 </div><!--.wrapper div-->
             </div><!--.content-area div-->
         </div><!--.bg1 div-->
-
         <div class="bg2">
             <div class="content-area">
                 <div class="wrapper">
@@ -79,8 +78,224 @@
                     </p>
                 </div><!--.wrapper div-->
             </div><!--.content-area div-->
+        </div><!--.bg2 div-->
+        <div class="bg1">
+            <div class="content-area">
+                <div class="wrapper">
+                    <h2>
+                        Code Implementation in Python
+                    </h2>
+                    <p>
+                        We will first code a simple logistic regression model for a sample dataset only using NumPy in Python. This is to understand how things work on a deeper basis. Another Python code for the same using Python's libraries will be added. This is for the reader to also get used to using the existing libraries.
+                        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">numpy</span> <span style="color: #008800; font-weight: bold">as</span> <span style="color: #0e84b5; font-weight: bold">np</span>
+<span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">pandas</span> <span style="color: #008800; font-weight: bold">as</span> <span style="color: #0e84b5; font-weight: bold">pd</span>
+<span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">matplotlib.pyplot</span> <span style="color: #008800; font-weight: bold">as</span> <span style="color: #0e84b5; font-weight: bold">plt</span>
+<span style="color: #333333">%</span>matplotlib inline
+<span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">seaborn</span> <span style="color: #008800; font-weight: bold">as</span> <span style="color: #0e84b5; font-weight: bold">sns</span>
+<span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">sklearn</span>
+<span style="color: #008800; font-weight: bold">from</span> <span style="color: #0e84b5; font-weight: bold">sklearn.model_selection</span> <span style="color: #008800; font-weight: bold">import</span> train_test_split
+<span style="color: #008800; font-weight: bold">from</span> <span style="color: #0e84b5; font-weight: bold">sklearn.preprocessing</span> <span style="color: #008800; font-weight: bold">import</span> StandardScaler
+<span style="color: #008800; font-weight: bold">from</span> <span style="color: #0e84b5; font-weight: bold">sklearn.metrics</span> <span style="color: #008800; font-weight: bold">import</span> accuracy_score
+</pre></div>
+<br>
+                        <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #888888"># Let us first create our input Data. We look to having 2 features (x and y co-ordinate) and 2 labels: 0 and 1 </span>
+np<span style="color: #333333">.</span>random<span style="color: #333333">.</span>seed(<span style="color: #0000DD; font-weight: bold">10</span>)
+num_observations <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">1000</span>
+
+<span style="color: #888888"># Create a 2-dimensional Gaussian Distribution. We make 2 distributions, one for each label.</span>
+mean1 <span style="color: #333333">=</span> (<span style="color: #0000DD; font-weight: bold">0</span>, <span style="color: #0000DD; font-weight: bold">0</span>) <span style="color: #888888"># Mean of first distribution</span>
+mean2 <span style="color: #333333">=</span> (<span style="color: #0000DD; font-weight: bold">2</span>, <span style="color: #0000DD; font-weight: bold">4</span>) <span style="color: #888888"># Mean of second distribution</span>
+cov <span style="color: #333333">=</span> [[<span style="color: #0000DD; font-weight: bold">1</span>, <span style="color: #0000DD; font-weight: bold">0</span>], [<span style="color: #0000DD; font-weight: bold">0</span>, <span style="color: #0000DD; font-weight: bold">1</span>]] <span style="color: #888888">#Co-variance of both distributions</span>
+data1<span style="color: #333333">=</span>[]
+x1, y1 <span style="color: #333333">=</span> np<span style="color: #333333">.</span>random<span style="color: #333333">.</span>multivariate_normal(mean1, cov, num_observations)<span style="color: #333333">.</span>T
+x2, y2 <span style="color: #333333">=</span> np<span style="color: #333333">.</span>random<span style="color: #333333">.</span>multivariate_normal(mean2, cov, num_observations)<span style="color: #333333">.</span>T
+<span style="color: #008800; font-weight: bold">for</span> i <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007020">range</span>(<span style="color: #007020">len</span>(x1)):
+    t1 <span style="color: #333333">=</span> x1[i]
+    t2 <span style="color: #333333">=</span> y1[i]
+    data1<span style="color: #333333">.</span>append([t1,t2,<span style="color: #0000DD; font-weight: bold">1</span>])
+<span style="color: #008800; font-weight: bold">for</span> i <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007020">range</span>(<span style="color: #007020">len</span>(x1)):
+    t1 <span style="color: #333333">=</span> x2[i]
+    t2 <span style="color: #333333">=</span> y2[i]
+    data1<span style="color: #333333">.</span>append([t1,t2,<span style="color: #0000DD; font-weight: bold">0</span>])
+
+<span style="color: #888888">#Convert to DataFrame</span>
+data <span style="color: #333333">=</span> pd<span style="color: #333333">.</span>DataFrame(data1)
+data<span style="color: #333333">.</span>columns<span style="color: #333333">=</span>[<span style="background-color: #fff0f0">&#39;x&#39;</span>, <span style="background-color: #fff0f0">&#39;y&#39;</span>, <span style="background-color: #fff0f0">&#39;label&#39;</span>]
+column <span style="color: #333333">=</span> data[<span style="background-color: #fff0f0">&quot;x&quot;</span>]
+
+<span style="color: #888888"># Plot the input data</span>
+fig <span style="color: #333333">=</span> plt<span style="color: #333333">.</span>figure()
+ax1 <span style="color: #333333">=</span> fig<span style="color: #333333">.</span>add_subplot(<span style="color: #0000DD; font-weight: bold">111</span>)
+plt<span style="color: #333333">.</span>xlabel(<span style="background-color: #fff0f0">&#39;x - coordinate&#39;</span>)
+plt<span style="color: #333333">.</span>ylabel(<span style="background-color: #fff0f0">&#39;y - coordinate&#39;</span>)
+ax1<span style="color: #333333">.</span>scatter(data[<span style="color: #0000DD; font-weight: bold">0</span>:num_observations][<span style="background-color: #fff0f0">&#39;x&#39;</span>], data[<span style="color: #0000DD; font-weight: bold">0</span>:num_observations][<span style="background-color: #fff0f0">&#39;y&#39;</span>], label<span style="color: #333333">=</span><span style="background-color: #fff0f0">&#39;Positive Label&#39;</span>)
+ax1<span style="color: #333333">.</span>scatter(data[num_observations:<span style="color: #0000DD; font-weight: bold">2</span><span style="color: #333333">*</span>num_observations][<span style="background-color: #fff0f0">&#39;x&#39;</span>], data[num_observations:<span style="color: #0000DD; font-weight: bold">2</span><span style="color: #333333">*</span>num_observations][<span style="background-color: #fff0f0">&#39;y&#39;</span>], label<span style="color: #333333">=</span><span style="background-color: #fff0f0">&#39;Negative Label&#39;</span>)
+plt<span style="color: #333333">.</span>legend(loc<span style="color: #333333">=</span><span style="background-color: #fff0f0">&#39;best&#39;</span>)
+plt<span style="color: #333333">.</span>title(<span style="background-color: #fff0f0">&#39;Input Data Scatter Plot&#39;</span>)
+plt<span style="color: #333333">.</span>show()
+</pre></div>
+                    <br> We thus get the following output:
+                    <figure>
+                        <img src="Images/Input_data.png" alt="Input" style="width: 500px;">
+                        <figcaption>
+                        </figcaption>
+                    </figure>
+
+                    <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #888888"># Save the input training data as feature values and corresponding label</span>
+inp_df <span style="color: #333333">=</span> data<span style="color: #333333">.</span>drop(data<span style="color: #333333">.</span>columns[[<span style="color: #0000DD; font-weight: bold">2</span>]], axis<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">1</span>)
+out_df <span style="color: #333333">=</span> data<span style="color: #333333">.</span>drop(data<span style="color: #333333">.</span>columns[[<span style="color: #0000DD; font-weight: bold">0</span>,<span style="color: #0000DD; font-weight: bold">1</span>]], axis<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">1</span>)
+
+<span style="color: #888888"># Standardize features by removing the mean and scaling to unit variance</span>
+scaler <span style="color: #333333">=</span> StandardScaler()
+inp_df <span style="color: #333333">=</span> scaler<span style="color: #333333">.</span>fit_transform(inp_df)
+
+<span style="color: #888888"># Split training data into training data and testing data</span>
+X_train, X_test, y_train, y_test <span style="color: #333333">=</span> train_test_split(inp_df, out_df, test_size<span style="color: #333333">=</span><span style="color: #6600EE; font-weight: bold">0.2</span>, random_state<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">20</span>)
+y_tr_arr <span style="color: #333333">=</span> y_train<span style="color: #333333">.</span>to_numpy()
+y_ts_arr <span style="color: #333333">=</span> y_test<span style="color: #333333">.</span>to_numpy()
+<span style="color: #008800; font-weight: bold">print</span>(<span style="background-color: #fff0f0">&#39;Input Shape&#39;</span>, (X_train<span style="color: #333333">.</span>shape))
+<span style="color: #008800; font-weight: bold">print</span>(<span style="background-color: #fff0f0">&#39;Output Shape&#39;</span>, X_test<span style="color: #333333">.</span>shape)
+</pre></div>
+
+<br> Please note that for the next two code blocks, this <a href="https://github.com/SSaishruthi/LogisticRegression_Vectorized_Implementation">source</a> has been referred, but with slight improvements.
+
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">logistic</span>(x):
+    final_result <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">1</span><span style="color: #333333">/</span>(<span style="color: #0000DD; font-weight: bold">1</span><span style="color: #333333">+</span>np<span style="color: #333333">.</span>exp(<span style="color: #333333">-</span>x))
+    <span style="color: #008800; font-weight: bold">return</span> final_result
+
+<span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">model_optimize</span>(w, b, X, Y):
+    m <span style="color: #333333">=</span> X<span style="color: #333333">.</span>shape[<span style="color: #0000DD; font-weight: bold">0</span>]
+    
+    <span style="color: #888888"># Prediction</span>
+    final_result <span style="color: #333333">=</span> logistic(np<span style="color: #333333">.</span>dot(w,X<span style="color: #333333">.</span>T)<span style="color: #333333">+</span>b)
+    Y_T <span style="color: #333333">=</span> Y<span style="color: #333333">.</span>T
+
+    <span style="color: #888888"># Log-likelihood, but with a negative sign, because with gradient descent, we look to minimising the loss function, which in our case is the log-likelihood</span>
+    cost <span style="color: #333333">=</span> (<span style="color: #333333">-</span><span style="color: #0000DD; font-weight: bold">1</span><span style="color: #333333">/</span>m)<span style="color: #333333">*</span>(np<span style="color: #333333">.</span>sum((Y_T<span style="color: #333333">*</span>np<span style="color: #333333">.</span>log(final_result)) <span style="color: #333333">+</span> ((<span style="color: #0000DD; font-weight: bold">1</span><span style="color: #333333">-</span>Y_T)<span style="color: #333333">*</span>(np<span style="color: #333333">.</span>log(<span style="color: #0000DD; font-weight: bold">1</span><span style="color: #333333">-</span>final_result)))))
+   
+    <span style="color: #888888">#Gradient calculation</span>
+    dw <span style="color: #333333">=</span> (<span style="color: #0000DD; font-weight: bold">1</span><span style="color: #333333">/</span>m)<span style="color: #333333">*</span>(np<span style="color: #333333">.</span>dot(X<span style="color: #333333">.</span>T, (final_result<span style="color: #333333">-</span>Y<span style="color: #333333">.</span>T)<span style="color: #333333">.</span>T))
+    db <span style="color: #333333">=</span> (<span style="color: #0000DD; font-weight: bold">1</span><span style="color: #333333">/</span>m)<span style="color: #333333">*</span>(np<span style="color: #333333">.</span>sum(final_result<span style="color: #333333">-</span>Y<span style="color: #333333">.</span>T))
+    
+    grads <span style="color: #333333">=</span> {<span style="background-color: #fff0f0">&quot;dw&quot;</span>: dw, <span style="background-color: #fff0f0">&quot;db&quot;</span>: db}
+    
+    <span style="color: #008800; font-weight: bold">return</span> grads, cost
+    
+<span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">model_predict</span>(w, b, X, Y, learning_rate, no_iterations):
+    costs <span style="color: #333333">=</span> []
+    <span style="color: #008800; font-weight: bold">for</span> i <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007020">range</span>(no_iterations):
+        grads, cost <span style="color: #333333">=</span> model_optimize(w,b,X,Y)
+        dw <span style="color: #333333">=</span> grads[<span style="background-color: #fff0f0">&quot;dw&quot;</span>]
+        db <span style="color: #333333">=</span> grads[<span style="background-color: #fff0f0">&quot;db&quot;</span>]
+        <span style="color: #888888"># Update the Weights</span>
+        w <span style="color: #333333">=</span> w <span style="color: #333333">-</span> (learning_rate <span style="color: #333333">*</span> (dw<span style="color: #333333">.</span>T))
+        b <span style="color: #333333">=</span> b <span style="color: #333333">-</span> (learning_rate <span style="color: #333333">*</span> db)
+       
+        <span style="color: #008800; font-weight: bold">if</span> (i <span style="color: #333333">%</span> <span style="color: #0000DD; font-weight: bold">100</span> <span style="color: #333333">==</span> <span style="color: #0000DD; font-weight: bold">0</span>):
+            costs<span style="color: #333333">.</span>append(cost)
+    
+    <span style="color: #888888"># Final parameters</span>
+    coeff <span style="color: #333333">=</span> {<span style="background-color: #fff0f0">&quot;w&quot;</span>: w, <span style="background-color: #fff0f0">&quot;b&quot;</span>: b}
+    gradient <span style="color: #333333">=</span> {<span style="background-color: #fff0f0">&quot;dw&quot;</span>: dw, <span style="background-color: #fff0f0">&quot;db&quot;</span>: db}
+    
+    <span style="color: #008800; font-weight: bold">return</span> coeff, gradient, costs
+
+<span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">predict</span>(final_pred, m, threshold):
+    <span style="color: #888888"># A threshold is added, so the user can play with this number to see how the accuracy changes.</span>
+    y_pred <span style="color: #333333">=</span> np<span style="color: #333333">.</span>zeros((<span style="color: #0000DD; font-weight: bold">1</span>,m))
+    <span style="color: #008800; font-weight: bold">for</span> i <span style="color: #000000; font-weight: bold">in</span> <span style="color: #007020">range</span>(final_pred<span style="color: #333333">.</span>shape[<span style="color: #0000DD; font-weight: bold">1</span>]):
+        <span style="color: #008800; font-weight: bold">if</span> final_pred[<span style="color: #0000DD; font-weight: bold">0</span>][i] <span style="color: #333333">&gt;</span> threshold:
+            y_pred[<span style="color: #0000DD; font-weight: bold">0</span>][i] <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">1</span>
+    <span style="color: #008800; font-weight: bold">return</span> y_pred
+</pre></div>
+<br>
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #888888">#Get number of features, which in our case is 2</span>
+n_features <span style="color: #333333">=</span> X_train<span style="color: #333333">.</span>shape[<span style="color: #0000DD; font-weight: bold">1</span>]
+<span style="color: #008800; font-weight: bold">print</span>(<span style="background-color: #fff0f0">&#39;Number of Features&#39;</span>, n_features)
+    
+<span style="color: #888888"># Initialise parameters. Since our example is a very simple one, we will take up initialisation to zero.</span>
+w <span style="color: #333333">=</span> np<span style="color: #333333">.</span>zeros((<span style="color: #0000DD; font-weight: bold">1</span>,n_features))
+b <span style="color: #333333">=</span> <span style="color: #0000DD; font-weight: bold">0</span>
+  
+<span style="color: #888888"># Set Threshold </span>
+t <span style="color: #333333">=</span> <span style="color: #6600EE; font-weight: bold">0.5</span>
+  
+<span style="color: #888888"># Perform Gradient Descent</span>
+coeff, gradient, costs <span style="color: #333333">=</span> model_predict(w, b, X_train, y_tr_arr, learning_rate<span style="color: #333333">=</span><span style="color: #6600EE; font-weight: bold">0.0001</span>,no_iterations<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">4500</span>)
+w <span style="color: #333333">=</span> coeff[<span style="background-color: #fff0f0">&quot;w&quot;</span>]
+b <span style="color: #333333">=</span> coeff[<span style="background-color: #fff0f0">&quot;b&quot;</span>]
+<span style="color: #008800; font-weight: bold">print</span>(<span style="background-color: #fff0f0">&#39;Optimized weights&#39;</span>, w)
+<span style="color: #008800; font-weight: bold">print</span>(<span style="background-color: #fff0f0">&#39;Optimized intercept&#39;</span>,b)
+    
+final_train_pred <span style="color: #333333">=</span> logistic(np<span style="color: #333333">.</span>dot(w,X_train<span style="color: #333333">.</span>T)<span style="color: #333333">+</span>b)
+final_test_pred <span style="color: #333333">=</span> logistic(np<span style="color: #333333">.</span>dot(w,X_ts_arr<span style="color: #333333">.</span>T)<span style="color: #333333">+</span>b)
+m_tr <span style="color: #333333">=</span>  X_train<span style="color: #333333">.</span>shape[<span style="color: #0000DD; font-weight: bold">0</span>]
+m_ts <span style="color: #333333">=</span>  X_test<span style="color: #333333">.</span>shape[<span style="color: #0000DD; font-weight: bold">0</span>]
+    
+<span style="color: #888888"># Get Training Accuracy</span>
+y_tr_pred <span style="color: #333333">=</span> predict(final_train_pred, m_tr, t)
+<span style="color: #008800; font-weight: bold">print</span>(<span style="background-color: #fff0f0">&#39;Training Accuracy&#39;</span>,accuracy_score(y_tr_pred<span style="color: #333333">.</span>T, y_tr_arr))
+    
+<span style="color: #888888"># Get Testing Accuracy</span>
+y_ts_pred <span style="color: #333333">=</span> predict(final_test_pred, m_ts, t)
+<span style="color: #008800; font-weight: bold">print</span>(<span style="background-color: #fff0f0">&#39;Test Accuracy&#39;</span>,accuracy_score(y_ts_pred<span style="color: #333333">.</span>T, y_ts_arr))
+</pre></div>
+    
+
+<br> This gives us the following output:
+
+    <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">Number of Features <span style="color: #0000DD; font-weight: bold">2</span>
+Optimized weights [[<span style="color: #333333">-</span><span style="color: #6600EE; font-weight: bold">0.14523948</span> <span style="color: #333333">-</span><span style="color: #6600EE; font-weight: bold">0.18649513</span>]]
+Optimized intercept <span style="color: #333333">-</span><span style="color: #6600EE; font-weight: bold">0.0031321592899463723</span>
+Training Accuracy <span style="color: #6600EE; font-weight: bold">0.981875</span>
+Test Accuracy <span style="color: #6600EE; font-weight: bold">0.9825</span>
+</pre></div>
+                    </p>
+
+                    <p>
+                        The code for the same using scikit-learn in Python is available <a href="https://github.com/CodexForster/CS460/blob/main/Lecture%20Note/Logistic_Regression.ipynb" target="blank">here</a>. scikit-learn is a simple machine learning library in Python and building machine learning models are comparatively very easy using scikit-learn rather than coding for the algorithms yourself. However, for a deeper understanding it is a good exercise to code such simple models from scratch. Once that foundation is built, one can switch to libraries like scikit-learn for a faster and more efficient experience.
+                    </p>
+                </div><!--.wrapper div-->
+            </div><!--.content-area div-->
         </div><!--.bg1 div-->
-        
+        <div class="bg2">
+            <div class="content-area">
+                <div class="wrapper">
+                    <h2>
+                        Logistic Regression vs. Linear Regression
+                    </h2>
+                    <p>
+                        Logistic regression tells you the probability that your input belongs to the "positive" class. So when we set a threshold on the probability, we obtain a classifier. Linear regressors try to interpolate/extrapolate the output and predicts the value for x. It is more suitable for problems like prediction. One reason as to why one should not use a linear regressor for a classification problem is that, when there is an outlier belonging to one of the classes, that outlier plays a heavy role in deciding the parameter values, and this can lead to a bad model.
+                        The following figure explains this issue, rather nicely:
+                    </p>
+                    <figure>
+                        <img src="Images/bad_linreg.png" alt="Linear Regressor" style="width: 500px;">
+                        <figcaption>
+                            Fig. 3: For a threshold of say, 0.5, we see why linear regression can give us bad results if we have such outliers. (Source: <a href="https://stats.stackexchange.com/questions/22381/why-not-approach-classification-through-regression" target="blank">StackExchange</a>)
+                        </figcaption>
+                    </figure>
+                    <p>
+                        For a multi-class classification problem, (which can be done using LReg) using the linear regression would be difficult when one is defining the distance metric. We might get different results just by shuffling the labels of the classes or changing the scale of assigned numeric values. When the value of a feature with a positive weight is higher compared to the others, it contributes more to the parameter updates, because it has a higher weight. Considering if one has read the next section on Multi-class classification using LReg, one can see that the sigmoid function squeezing all labels between 0 and 1 plays an important role here, so that all labels have the same weight, irrespective of what value they were given initially. This acts somewhat like a normalising mechanism. Hence we see that linear regression would be a bad algorithm to use in this case.
+                    </p>
+                    <p>As explained in CITE, Logistic regression can suffer from complete separation. If there is a feature that would perfectly separate the two classes, the logistic regression model can no longer be trained. This is because the weight for that feature would not converge, because the optimal weight would be infinite. This is really a bit unfortunate, because such a feature is really useful. The problem of complete separation can be solved by introducing penalization of the weights or defining a prior probability distribution of weights.
+                        LReg is not only a classification model, but it also gives one, an idea of how probably that example belongs to that label. It is somewhat like an additional piece of information. Knowing that an example has a 99% probability for it to belong to a class compared to 60% makes a big difference.
+                    </p>
+                    <p>
+                        LReg doesn't require high computation power and it is easy to implement. LReg will not be able to handle a large number of categorical features/variables and it will also not perform well with independent variables that are not correlated to the target variable and are very similar/correlated to each other.
+                    </p>
+                </div><!--.wrapper div-->
+            </div><!--.content-area div-->
+        </div><!--.bg2 div-->
+        <div class="bg1">
+            <div class="content-area">
+                <div class="wrapper">
+                    <h2>
+                        Multinomial Logistic Regression
+                    </h2>
+                    
+                </div><!--.wrapper div-->
+            </div><!--.content-area div-->
+        </div><!--.bg1 div-->
         <div class="bg1" id="References" style="border-top: 3px solid black;">
             <div class="content-area">
                 <div class="wrapper">
@@ -116,6 +331,11 @@
                             Wright, S. (2020). Optimization Methods for Machine Learning. Presentation, <a href="http://helper.ipam.ucla.edu/publications/elws1/elws1_13686.pdf" target="blank">http://helper.ipam.ucla.edu/publications/elws1/elws1_13686.pdf</a>.
                         </li>
                     </ol>
+                    TODO: CITE in text, GRAMMARLY, Multinomial, GRAD_DESC EQN. 
+                    <br>https://christophm.github.io/interpretable-ml-book/logistic.html
+                    <br>https://ml-cheatsheet.readthedocs.io/en/latest/logistic_regression.html
+                    <br>https://github.com/SSaishruthi/LogisticRegression_Vectorized_Implementation
+                    <br> Mishra, S. "Linear Regression". Lecture 7. CS460 Class Lecture (Lecture Notes, NISER, Bhubaneswar, India)
                  </div><!--.wrapper div-->
             </div><!--.content-area div-->
         </div><!--.bg1 div-->
@@ -124,7 +344,7 @@
                 <div class="wrapper">
                     <div class="heading">
                         <h2>
-                            Lecture By:
+                            Course Instructor:
                         </h2>
                     </div><!--.heading div-->
                     <div class="photo">
@@ -139,16 +359,12 @@
                 <div class="wrapper">
                     <div class="heading">
                         <h2>
-                            Contributors:
+                            Lecture Note Written by:
                         </h2>
                     </div>  <!--.heading div-->
                     <div class="photo">
                         <a href="https://github.com/CodexForster" target="blank"><img src="Images/Danush.jpeg" alt="Danush Shekar"></a>
                         <p><a href="https://github.com/CodexForster" target="blank">Danush Shekar</a></p>
-                    </div><!--.photo div-->
-                    <div class="photo">
-                        <a href="https://github.com/harisankarkr1998" target="blank"><img src="Images/Hari.jpg" alt="Harisankar K R"></a>
-                        <p><a href="https://github.com/harisankarkr1998" target="blank">Harisankar K R</a></p>
                     </div><!--.photo div-->
                 </div><!--.wrapper div-->
             </div><!--.details div-->
