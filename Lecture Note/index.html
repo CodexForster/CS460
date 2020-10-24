@@ -33,7 +33,7 @@
                         Logistic Regression (LReg) is a supervised algorithm used in classification problems in machine learning. There are two output labels/classes that the data would be classified into, we will call them positive and negative labels (we will denote the positive labels with the value 1 and the negative labels with 0). One can make a multi-label classification using LReg, but we will touch upon that towards the end.
                     </p>
                     <p>
-                        One has to ask why is the term "Regression" used in the name when it is a classification algorithm. Regression is an algorithm that gives us a real number as the output for every input <pre3 lang="latex" style="margin-bottom: 0px;">x</pre3>, and the output of a regression model, <pre2 lang="latex">\{y\}</pre2> is continuous. LReg also gives a continuous real number as the output, but we have some sort of a threshold to put it into one of the 2 labels. The reason "Logistic" is used is that this algorithm involves using the standard logistic function or the sigmoid function: <a href="https://www.codecogs.com/eqnedit.php?latex=\frac{1}{1&space;&plus;&space;e^{-x}}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{1}{1&space;&plus;&space;e^{-x}}" style="margin-bottom: -10px;" title="\frac{1}{1 + e^{-x}}" /></a>.
+                        One has to ask why is the term "Regression" used in the name when it is a classification algorithm. Regression is an algorithm that gives us a real number as the output for every input <pre3 lang="latex" style="margin-bottom: 0px;">x</pre3>, and the output of a regression model, <pre2 lang="latex">\{y\}</pre2> is continuous. LReg also gives a continuous real number as the output, but we have some sort of a threshold (which would be a <b>hyper-parameter</b>) to put it into one of the 2 labels. The reason "Logistic" is used is that this algorithm involves using the standard <b>logistic function</b> or the sigmoid function: <a href="https://www.codecogs.com/eqnedit.php?latex=\frac{1}{1&space;&plus;&space;e^{-x}}" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\frac{1}{1&space;&plus;&space;e^{-x}}" style="margin-bottom: -10px;" title="\frac{1}{1 + e^{-x}}" /></a>.
                     </p>
                 </div><!--.wrapper div-->
             </div><!--.content-area div-->
@@ -50,14 +50,14 @@
                             S_{W, b}(X) = \frac{1}{1 + e^{-(WX + b)}}
                         </pre>
                         For an input <pre3 lang="latex">X</pre3>, <pre5 lang="latex">S_{W, b}(X)</pre5> lies in (0, 1). This is taken as the probability that the input belongs to class 1. The probability that <pre3 lang="latex">X</pre3> belongs to class 0, is <pre5 lang="latex">(1 - S_{W, b}(X))</pre5>. 
-                        Now, to assign a class, we set some threshold (say <pre3 lang="latex">t</pre3>) such that, for some <pre2 lang="latex">X_i</pre2>, if <pre5 lang="latex">S_{W, b}(X_i) \geq t</pre5> then the label 1 is assigned to <pre2 lang="latex">X_i</pre2>, else 0 is assigned. The figure shown below explains the same, graphically, where is the sigmoid takes a functional value above the blue line, then 1 is assigned; if it takes a functional value under the blue line, 0 is assigned.
+                        Now, to assign a class, we set some threshold (say <pre3 lang="latex">t</pre3>) such that, for some <pre2 lang="latex">X_i</pre2>, if <pre5 lang="latex">S_{W, b}(X_i) \geq t</pre5> then the label 1 is assigned to <pre2 lang="latex">X_i</pre2>, else 0 is assigned. Ofcourse, there can be other rules to classify what label the example would get, but we just showed one way this can be done. The figure shown below explains the same, graphically, where is the sigmoid takes a functional value above the blue line, then 1 is assigned; if it takes a functional value under the blue line, 0 is assigned.
                         <figure>
                             <img src="Images/threshold.png" alt="Threshold" style="width:500px;"> 
                             <figcaption>
                                 Fig.1 - Threshold for classifying into positive/negative label (Source: <a href="https://ml-cheatsheet.readthedocs.io/en/latest/logistic_regression.html" target="blank">Machine Learning Glossary</a>)
                             </figcaption>
                         </figure>
-                        <br>We also define likelihood:
+                        <br>We also define <b>likelihood</b>:
                         <pre lang="latex">
                             \begin{aligned}
                             L_{(W, b)} \equiv L((W, b) \mid y ; X) &=\prod_{i = 1}^N S_{W, b}\left(X_{i}\right)^{y_{i}}\left(1 - S_{W, b}\left(X_{i}\right)\right)^{\left(1-y_{i}\right)}
@@ -66,7 +66,7 @@
                         Above, <pre2 lang="latex">y (\equiv \{y_i\})</pre2> and <pre5 lang="latex">X (\equiv \{X_i\})</pre5> are the true output and corresponding input (training) data respectively. <pre2 lang="latex">y_{i}</pre2> is the true class, i.e 0 or 1. The product is from <pre3 lang="latex">i = 0</pre3> to <pre3 lang="latex">N</pre3> where here <pre3 lang="latex">N</pre3> is taken to be the training dataset size. The above function we have, quantifies how good our fit is, or in simpler terms, how likely a given input will give the correct label. We see that the above definition is the likelihood of observing <pre3 lang="latex">N</pre3> labels for <pre3 lang="latex">N</pre3> examples, which is the product of likelihood of each observation.
                         Like in linear regression, where we minimised the loss function and thus update our parameters, LReg will involve maximising the likelihood function.<br>
                         As an example let us say <pre2 lang="latex">y_i</pre2> = 1 and we have <pre2 lang="latex">x_1</pre2> that is some real number. <pre5 lang="latex">S_{W, b}\left(x_{i}\right)^{y_{i}}\left(1 - S_{W, b}\left(x_{i}\right)\right)^{\left(1-y_{i}\right)</pre5> would give us <pre5 lang="latex"> S_{W, b}\left(x_{i}\right)^{1}\left(1 - S_{W, b}\left(x_{i}\right)\right)^{0} = S_{W, b}\left(x_{i}\right) \in (0,1)</pre5>.
-                        <br>One needs to note that there should not be interdependent examples/observations, which means that any example one chooses, it should be independent of the other examples in the dataset. 
+                        <br>One needs to note that the examples/observations should be not be interdependent, which means that any example one chooses, it should be independent of the other examples in the dataset. 
                         <br>Since we have exponentials involved (harder to calculate), one can also shift to log-likelihood, and thus the equation now becomes:
                         <pre lang="latex">
                             \begin{aligned}
@@ -87,10 +87,10 @@
             <div class="content-area">
                 <div class="wrapper">
                     <h2>
-                        Code Implementation in Python
+                        Implementation in Python
                     </h2>
                     <p>
-                        We will first code a simple logistic regression model for a sample dataset only using NumPy in Python. This is to understand how things work on a deeper basis. Another Python code for the same using Python's libraries will be added. This is for the reader to also get used to using the existing libraries.
+                        We will first code a simple logistic regression model for a sample dataset only using <b>NumPy</b> in Python. This is to understand how things work on a deeper basis. Another Python code for the same using Python's libraries will be added. This is for the reader to also get used to using the existing libraries.
                         <!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">numpy</span> <span style="color: #008800; font-weight: bold">as</span> <span style="color: #0e84b5; font-weight: bold">np</span>
 <span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">pandas</span> <span style="color: #008800; font-weight: bold">as</span> <span style="color: #0e84b5; font-weight: bold">pd</span>
 <span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">matplotlib.pyplot</span> <span style="color: #008800; font-weight: bold">as</span> <span style="color: #0e84b5; font-weight: bold">plt</span>
@@ -257,7 +257,7 @@ Test Accuracy <span style="color: #6600EE; font-weight: bold">0.9825</span>
                     </p>
 
                     <p>
-                        The code for the same using scikit-learn in Python is available <a href="https://github.com/CodexForster/CS460/blob/main/Lecture%20Note/Logistic_Regression.ipynb" target="blank">here</a>. scikit-learn is a simple machine learning library in Python and building machine learning models are comparatively very easy using scikit-learn rather than coding for the algorithms yourself. However, for a deeper understanding it is a good exercise to code such simple models from scratch. Once that foundation is built, one can switch to libraries like scikit-learn for a faster and more efficient experience.
+                        The code for the same using <b>scikit-learn</b> in Python is available <a href="https://github.com/CodexForster/CS460/blob/main/Lecture%20Note/Logistic_Regression.ipynb" target="blank">here</a>. scikit-learn is a simple machine learning library in Python and building machine learning models are comparatively very easy using scikit-learn rather than coding for the algorithms yourself. However, for a deeper understanding it is a good exercise to code such simple models from scratch. Once that foundation is built, one can switch to libraries like scikit-learn for a faster and more efficient experience.
                     </p>
                 </div><!--.wrapper div-->
             </div><!--.content-area div-->
@@ -266,10 +266,10 @@ Test Accuracy <span style="color: #6600EE; font-weight: bold">0.9825</span>
             <div class="content-area">
                 <div class="wrapper">
                     <h2>
-                        Logistic Regression vs. Linear Regression
+                        Classification Through Logistic vs. Linear Regression
                     </h2>
                     <p>
-                        Logistic regression tells you the probability that your input belongs to the "positive" class. So when we set a threshold on the probability, we obtain a classifier. Linear regressors try to interpolate/extrapolate the output and predict the value for x. It is more suitable for problems like prediction. One reason as to why one should not use a linear regressor for a classification problem is that, when there is an outlier belonging to one of the classes, that outlier plays a heavy role in deciding the parameter values, and this can lead to a bad model.
+                        Logistic regression tells you the probability that your input belongs to the "positive" class. So when we set a threshold on the probability, we obtain a classifier. Linear regressors try to interpolate/extrapolate the output and predict the value for x. It is more suitable for problems like prediction. One reason as to why one should not use a linear regressor for a classification problem is that, when there is an <b>outlier</b> belonging to one of the classes, that outlier plays a heavy role in deciding the parameter values, and this can lead to a bad model.
                         The following figure explains this issue, rather nicely:
                     </p>
                     <figure>
@@ -290,7 +290,7 @@ Test Accuracy <span style="color: #6600EE; font-weight: bold">0.9825</span>
                     <p>
                         For a multi-class classification problem, (which can be done using LReg) using the linear regression would be difficult when one is defining the distance metric. We might get different results just by shuffling the labels of the classes or changing the scale of assigned numeric values. When the value of a feature with a positive weight is higher compared to the others, it contributes more to the parameter updates, because it has a higher weight. Considering if one has read the next section on Multi-class classification using LReg, one can see that the sigmoid function squeezing all labels between 0 and 1 plays an important role here so that all labels have the same weight, irrespective of what value they were given initially. This acts somewhat like a normalising mechanism. Hence we see that linear regression would be a bad algorithm to use in this case.
                     </p>
-                    <p>As explained in [<a href="#References">4</a>], Logistic regression can suffer from complete separation. If there is a feature that would perfectly separate the two classes, the logistic regression model can no longer be trained. This is because the weight for that feature would not converge because the optimal weight would be infinite. This is really a bit unfortunate because such a feature is really useful. The problem of complete separation can be solved by introducing penalization of the weights or defining a prior probability distribution of weights.
+                    <p>As explained in [<a href="#References">4</a>], Logistic regression can suffer from <b>complete separation</b>. If there is a feature that would perfectly separate the two classes, the logistic regression model can no longer be trained. This is because the weight for that feature would not converge because the optimal weight would be infinite. This is really a bit unfortunate because such a feature is really useful. The problem of complete separation can be solved by introducing penalization of the weights or defining a prior probability distribution of weights.
                         LReg is not only a classification model, but it also gives one, an idea of how probable that example belongs to that label. It is somewhat like an additional piece of information. Knowing that an example has a 99% probability for it to belong to a class compared to 60% makes a big difference.
                     </p>
                     <p>
@@ -311,6 +311,7 @@ Test Accuracy <span style="color: #6600EE; font-weight: bold">0.9825</span>
                         The i<sup>th</sup> binary problem will have 2 classes: i and NOT i. We then predict the probability of all n such binary classification problems. 
                         <br>Let us say p(i) is the probability of the i<sup>th</sup> binary classification problem. 
                         <br>Then our Prediction = argmax(p(i)).
+                        <br> Ofcourse, we do not need to always select the argument of the maximum probability to be our prediction, here can be other rules depending on the initial problem.
                     </p>
                 </div><!--.wrapper div-->
             </div><!--.content-area div-->
@@ -364,7 +365,7 @@ Test Accuracy <span style="color: #6600EE; font-weight: bold">0.9825</span>
                 <div class="wrapper">
                     <div class="heading">
                         <h2>
-                            Lecture Note Written by:
+                            Lecture Note Written By:
                         </h2>
                     </div>  <!--.heading div-->
                     <div class="photo">
@@ -377,7 +378,7 @@ Test Accuracy <span style="color: #6600EE; font-weight: bold">0.9825</span>
         <div class="bg3" style="background: black; padding: 10px; border-top: none;">
             <div class="details" style="padding: 0px;">
                 <div class="wrapper">
-                    <p style="color: white;">Lecture Notes submitted in partial fulfilment of the requirements for the CS460 Course, NISER.</p>
+                    <p style="color: white;">Lecture Note submitted in partial fulfilment of the requirements for the CS460 Course, NISER.</p>
                 </div><!--.wrapper div-->
             </div><!--.details div-->
         </div><!--.bg3 div-->
